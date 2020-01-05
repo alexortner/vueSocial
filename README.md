@@ -1,4 +1,4 @@
-# v3-custom
+# vue_social
 
 ## Project setup
 ```
