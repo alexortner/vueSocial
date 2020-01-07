@@ -10,25 +10,27 @@
 					class="px-3"
 					>
 					<v-text-field
-					v-model="email"
-					:rules="emailRules"
-					label="E-mail"
-					name="email"
-					required
+						v-model="email"
+						:rules="emailRules"
+						label="E-mail"
+						name="email"
+						required
+						prepend-icon="mdi-account"
 					>
-						<v-icon slot="prepend" >mdi-account</v-icon>
 					</v-text-field>
 
 					<v-text-field
-					v-model="password"
-					:rules="passwordRules"
-					label="Passwort"
-					required
-					type="password"
-
+						v-model="password"
+						:rules="passwordRules"
+						label="Passwort"
+						required
+						error-message="feedback"
+						message="test"
+						:type="showPassword ? 'txt' :'password'"
+						prepend-icon="mdi-lock"
+						:append-icon="showPassword? 'mdi-eye' :'mdi-eye-off'"
+						@click:append="showPassword = !showPassword"
 					>
-						<v-icon slot="prepend" >mdi-lock</v-icon>
-						<v-icon slot="append"  >mdi-eye-off</v-icon>
 					</v-text-field>
 
 					<v-btn class="mt-12" block @click="login">Login</v-btn>
@@ -57,6 +59,7 @@ export default{
 			passwordRules: [
 				v => !!v || 'Bitte Passwort eingeben',
 			],
+			showPassword: false,
 			feedback: null
 		}
 	},

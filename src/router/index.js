@@ -88,11 +88,9 @@ router.beforeEach((to, from, next) =>{
     // check auth state
     let user = firebase.auth().currentUser
     if(user){
-      console.log("HERE")
       // user signed in, proceed to route
       next()
     } else {
-      console.log("DAA")
       next({name:'Login'})
 
     }

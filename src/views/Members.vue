@@ -2,7 +2,9 @@
 <template>
 	<div class="members">
 		<h1 class="subheading grey--text">Mitgliederverzeichnis</h1>
-		<!-- Toolbar with search, filter and buttons for view change-->
+		<!-- ------------------------------------------------------------------
+			Toolbar with search, filter and buttons to call the different views
+		------------------------------------------------------------------- -->
 		<v-card class="my-3 px-3 elevation-5" >
 			<v-row >
 				<!-- Search input form-->
@@ -17,7 +19,7 @@
 
 					<v-text-field
 						label="Namen suchen"
-						v-model="searchUser"
+						v-model="search_value"
 						prepend-inner-icon="mdi-magnify"
 						clearable
 						hide-details
@@ -38,7 +40,7 @@
 						v-model="filter_values"
 						:items="filter_items"
 						small-chips
-						clearable
+						deletable-chips
 						hide-details
 						color="grey darken-2"
 					></v-select>
@@ -55,7 +57,8 @@
 						v-model="subfilter_values"
 						:items="subfilter_items"
 						small-chips
-						clearable
+						deletable-chips
+						single-line
 						hide-details
 						multiple
 						color="grey darken-2"
@@ -125,119 +128,42 @@
 			</v-row>
 		</v-card>
 
+		<!-- ------------------------------------------------------------------
+			call the chield compoents to show the data
+		------------------------------------------------------------------- -->
+
 		<!-- view 1: cards -->
 		<div class="py-3"  v-if="toggle_exclusive==1">
-		<v-row dense>
-        <v-col
-          v-for="(member,index) in member_filtered"
-          :key="index"
-          cols="12" 
-          sm="6" 
-        >
-          <v-card>
-            <v-list two-line dense>
-					<v-list-item :key="index">
-					<!-- if no image error show avatar  -->
-					<v-list-item-avatar v-if="!imgError" size="72">
-						<img 
-						:src="member.avatarURL"
-						:alt="member.name"
-						@error="onImgError()"/>
-					</v-list-item-avatar>
-					<!-- else show initials  -->
-					<v-list-item-avatar v-else color="red darken-4 white--text" size="62">
-						{{initials(member)}}
-					</v-list-item-avatar>
+			<ViewMembersCard :member_filtered="member_filtered"></ViewMembersCard>
+		</div>
 
-					<v-list-item-content>
-						<v-list-item-title>
-							<span v-if="member.titel">{{member.titel}}</span> 
-							{{member.vorname}} {{member.nachname}} {{member.namensziffer}} 
-							<span v-if="member.status">({{member.status}})</span>
-						</v-list-item-title>
-						<v-list-item-subtitle v-if="member.email"><v-icon x-small>mdi-email</v-icon> {{member.email}}</v-list-item-subtitle>
-						<v-list-item-subtitle v-if="member.telefonprivat"><v-icon x-small>mdi-phone-classic</v-icon> {{member.telefonprivat}}</v-list-item-subtitle>
-						<v-list-item-subtitle v-if="member.mobilprivat"><v-icon x-small>mdi-cellphone</v-icon> {{member.mobilprivat}}</v-list-item-subtitle>
-						
-					</v-list-item-content>
-					<v-spacer></v-spacer>
-					<v-list-item-action>
-              
+		<!-- view 2: table -->
+		<div class="py-4" v-if="toggle_exclusive==2">
+			<ViewMembersTable :member_filtered="member_filtered"></ViewMembersTable>
+		</div>
 
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+		<!-- view 3: photo cards -->
+		<div class="py-1" v-if="toggle_exclusive==3">
+			<ViewMembersPhoto :member_filtered="member_filtered"></ViewMembersPhoto>	
+		</div>
 
-              <v-btn icon>
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
+		<!-- view 4: google map -->
+		<div class="py-1" >
+			<div class="google-map" id="map_canvas"></div>
+		</div>
 
-             
-            </v-list-item-action>
+		<v-btn @click="tester">load</v-btn>
 
-				</v-list-item>
-			</v-list>
-
-          </v-card>
-        </v-col>
-      </v-row>
-  </div>
-
-	<!-- view 2: table -->
-	<div class="py-4" v-if="toggle_exclusive==2">
-		<v-data-table
-		:headers="member_list_headers"
-		:items="member_filtered"
-		:sort-by="['nachname', 'vorname']"
-		:sort-desc="[false, true]"
-		:items-per-page=50
-		:show-group-by=true
-		multi-sort
-		class="elevation-1"
-		></v-data-table>
-	</div>
-
-	<!-- view 3: photo cards -->
-	<div class="py-1" v-if="toggle_exclusive==3">
-		
-		<v-row>
-			<v-col cols="12" sm="6"  md="4" lg="3"   v-for="(member,index) in member_filtered" :key="index">
-				<v-card>
-
-					<v-img
-						class="white--text align-end"
-						:src="member.avatarURL"
-						height="350px"
-						>
-						
-					</v-img>
-					<v-card-title>{{member.titel}} {{member.vorname}} {{member.nachname}} ({{member.status}})</v-card-title>
-					<v-card-subtitle class="pb-0">Aktiv seit: {{member.eintritt}}</v-card-subtitle>
-
-					<v-card-text class="text--primary">
-						<div>Geburtstag: {{member.geburtstag}}</div>
-
-						<div>Ortsgruppe: {{member.ortsgruppe}}</div>
-					</v-card-text>
-				</v-card>
-			</v-col>
-		</v-row>	
-	</div>
-
-	<!-- view 4: google map -->
-	<div class="py-1" >
-		<div class="google-map" id="map_canvas"></div>
-	</div>
-
-  <v-btn @click="tester">load</v-btn>
-
-
-	</div>
-	
+	</div>	
 </template>
 
 <script>
 // @ is an alias to /src
+import {DataConversion} from '@/components/mixins/MixinMethods.js'
+import ViewMembersCard from '@/components/members/ViewMembersCard'
+import ViewMembersTable from '@/components/members/ViewMembersTable'
+import ViewMembersPhoto from '@/components/members/ViewMembersPhoto'
+
 import firebase from '@/firebase/init'
 let db=firebase.firestore()
 let storage=firebase.storage().ref()
@@ -245,26 +171,24 @@ let storage=firebase.storage().ref()
 
 export default {
 	name: 'members',
+	mixins: [DataConversion],
+	components:{
+		ViewMembersCard,
+		ViewMembersTable,
+		ViewMembersPhoto
+	},
+	//{EditMember},
 	data(){
 		return{
 		imgError:false,
 		toggle_exclusive: 1,
 		// variable to hold search field value
-		searchUser: '',
+		search_value: '',
 		// dropdown
 		filter_items:['Status','Semester','Ortsgruppe','Geburtstag'],
 		filter_values:null,
 		subfilter_values: [],
 		
-		// column selection for table view
-		member_list_headers: [
-			{ text: 'Titel', value: 'titel' },
-			{ text: 'Name', value: 'nachname' },
-			{ text: 'Vorname', value: 'vorname' },
-			{ text: 'Status', value: 'status' },
-			{ text: 'Eintritt', value: 'eintritt' },
-			{ text: 'Geburtstag', value: 'geburtstag' }
-        ],
 		member_list:[],
 		lat:50,
 		lng:8
@@ -272,31 +196,105 @@ export default {
 	}
 	},
 	computed:{
+		member_active(){
+			// filter out active members only
+			var data_filter_active = this.member_list.filter(user=>user.dbstatus=="aktiv")
+			return data_filter_active
+		},
 		member_filtered() {
-			let result = this.member_list.filter(user=>user.dbstatus=="aktiv");
-			if (this.searchUser) {
-				result = this.member_list.filter(user => 
-					user.nachname.toLocaleLowerCase().includes(this.searchUser.toLocaleLowerCase()) ||
-					user.vorname.toLocaleLowerCase().includes(this.searchUser.toLocaleLowerCase()) 
-				);	
+
+			var result=null
+			// filter only active members
+			var data_filter_active = this.member_active
+			// apply filter if a value is entered inthe search field orthe selection fields
+			if (this.search_value || this.subfilter_values.length>0) {
+
+				// first apply search field filter
+				var data_filter_search=null
+				if(this.search_value){
+					data_filter_search=data_filter_active.filter(user => 
+						user.nachname.toLocaleLowerCase().includes(this.search_value.toLocaleLowerCase()) ||
+						user.vorname.toLocaleLowerCase().includes(this.search_value.toLocaleLowerCase()) 
+					)
+				} else {
+					data_filter_search=data_filter_active
+				}
+				//console.log(data_filter_search)
+				// then apply select filter 
+				var data_select_filter=[]
+				if(this.subfilter_values.length>0){
+					
+
+					for (var sub_result of data_filter_search) {
+						// Case status search
+						if(this.filter_values=='Status'){
+							for (var status_filter of this.subfilter_values) {
+								if(sub_result.status.toLocaleLowerCase()==status_filter.toLocaleLowerCase()){
+									data_select_filter.push(sub_result)
+								}
+							}
+						}
+						// Case semester search
+						else if(this.filter_values=='Semester'){
+							for (var semester_filter of this.subfilter_values) {
+								if(sub_result.eintritt==semester_filter){
+									data_select_filter.push(sub_result)
+								}
+							}
+						}
+						// Case ortsgruppen search
+						else if(this.filter_values=='Ortsgruppe'){
+							for (var ortsgruppen_filter of this.subfilter_values) {
+								if(sub_result.ortsgruppe.toLocaleLowerCase()==ortsgruppen_filter.toLocaleLowerCase()){
+									data_select_filter.push(sub_result)
+								}
+							}
+						}
+						// Case Geburtsjahr search
+						else if(this.filter_values=='Geburtstag'){
+							for (var geburtstag_filter of this.subfilter_values) {
+								if(sub_result.geburtstag.substring(5,7)==geburtstag_filter){
+									data_select_filter.push(sub_result)
+								}
+							}
+						}
+						else{
+							data_select_filter=data_filter_search
+						}
+					}
+
+
+				}
+				else {
+					data_select_filter=data_filter_search
+				}
+				
+				
+				result=data_select_filter
+			// return everything if no search or filter selected
+			} else {
+				result=data_filter_active
 			}
+			
 			return result
-			},
+			
+
+		},
 
 		subfilter_items(){
 			let item_list=null
 			switch (this.filter_values) {
 				case 'Ortsgruppe':
-					item_list=['Berlin','Frankfurt','Freiburg','Harz','München','Nord','Rhein-Ruhr','Stuttgart','Ortsgruppenlos']
+					item_list=this.ortsgruppen_list_items
 					break;
 				case 'Status':
-					item_list=['aF','aB','iaB','AH','CK','BS']
+					item_list=this.status_list_items
 					break;
 				case 'Semester':
 					item_list=this.subfilter_items_semester
 					break;
 				case 'Geburtstag':
-					item_list=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember']
+					item_list=this.geburstag_list_items
 					break;
 
 			} 
@@ -325,17 +323,15 @@ export default {
 		subfilter_items_semester(){
 			var unique = {};
 			var distinct = [];
-			for( var i in this.member_filtered ){
-				if( typeof(unique[this.member_filtered[i].eintritt]) == "undefined"){
-					distinct.push(this.member_filtered[i].eintritt);
+			for( var i in this.member_active ){
+				if( typeof(unique[this.member_active[i].eintritt]) == "undefined"){
+					distinct.push(this.member_active[i].eintritt);
 				}
-			unique[this.member_filtered[i].eintritt] = 0;
+			unique[this.member_active[i].eintritt] = 0;
 			}
 			distinct=distinct.sort()
 			for(var j in distinct){
-				console.log(distinct[j])
-				distinct[j]=this.get_semester(distinct[j])
-				console.log(distinct[j])
+				distinct[j]={text: this.get_semester(distinct[j]), value: distinct[j]}
 			}
 			return distinct
 		},
@@ -343,24 +339,7 @@ export default {
 		
 		},
 	methods:{
-		initials(member_list){
-			let initials=member_list.vorname.substring(0,1)+member_list.nachname.substring(0,1)
-			return initials
-		},
-		get_semester(semester_id){
-			let semester=null
-			if(semester_id.substring(5,7)=='ws'){
-				semester='WS '+ semester_id.substring(0,4) + '/' + (parseInt(semester_id.substring(0,4))+1)
-			}
-			else if(semester_id.substring(5,7)=='ss'){
-				semester='SS '+ semester_id.substring(0,4)
-			}
-			return semester
 
-		},
-		onImgError() {
-			this.imgError = true;
-		},
 		json_initial_loader(){
 			this.member_list.forEach(function(obj) {
 				let slug=obj.vorname+'-'+obj.nachname
@@ -392,7 +371,7 @@ export default {
 
 	},
 	mounted(){
-		this.renderMap()
+		//this.renderMap()
 	},
 	// get all member data and avatarURL from firebase
 	created(){
