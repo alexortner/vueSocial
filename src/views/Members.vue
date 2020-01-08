@@ -23,6 +23,7 @@
 						prepend-inner-icon="mdi-magnify"
 						clearable
 						hide-details
+						dense
 						color="grey darken-2">
 					</v-text-field>
 					
@@ -43,6 +44,7 @@
 						deletable-chips
 						hide-details
 						color="grey darken-2"
+						dense
 					></v-select>
 				</v-col>
 				<v-col
@@ -57,6 +59,7 @@
 						v-model="subfilter_values"
 						:items="subfilter_items"
 						small-chips
+						dense
 						deletable-chips
 						single-line
 						hide-details
@@ -148,8 +151,8 @@
 		</div>
 
 		<!-- view 4: google map -->
-		<div class="py-1" >
-			<div class="google-map" id="map_canvas"></div>
+		<div class="py-1" v-if="toggle_exclusive==4">
+			<ViewMembersMap></ViewMembersMap>
 		</div>
 
 		<v-btn @click="tester">load</v-btn>
@@ -163,6 +166,8 @@ import {DataConversion} from '@/components/mixins/MixinMethods.js'
 import ViewMembersCard from '@/components/members/ViewMembersCard'
 import ViewMembersTable from '@/components/members/ViewMembersTable'
 import ViewMembersPhoto from '@/components/members/ViewMembersPhoto'
+import ViewMembersMap from '@/components/members/ViewMembersMap'
+
 
 import firebase from '@/firebase/init'
 let db=firebase.firestore()
@@ -175,7 +180,8 @@ export default {
 	components:{
 		ViewMembersCard,
 		ViewMembersTable,
-		ViewMembersPhoto
+		ViewMembersPhoto,
+		ViewMembersMap
 	},
 	//{EditMember},
 	data(){

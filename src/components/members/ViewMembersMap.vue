@@ -1,14 +1,13 @@
 <template>
-  <div class="booking">
-    <h1>Hütte</h1>
-	<MglMap 
-		:accessToken="accessToken" 
-		:mapStyle="mapStyle" 
-		:zoom="zommLevel"
-		:center="centerCords"
-		class="map" >
-	</MglMap>
-  </div>
+	<v-card class="pa-1">
+		<MglMap 
+			:accessToken="accessToken" 
+			:mapStyle="mapStyle" 
+			:zoom="zommLevel"
+			:center="centerCords"
+			class="map" >
+		</MglMap>
+	</v-card>
 </template>
 
 <script>
@@ -64,11 +63,6 @@ export default {
 <style>
 .map {
 	width: 100%;
-	height: 400px;
+	height: 500px;
 }
 </style>
-
-
-
-
-

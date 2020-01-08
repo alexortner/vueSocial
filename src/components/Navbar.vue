@@ -2,7 +2,10 @@
 	<nav>
 		<v-app-bar app color="indigo darken-3" dark clipped-left>
 			<v-app-bar-nav-icon @click="drawer=!drawer"></v-app-bar-nav-icon>
-			<v-toolbar-title class="text-uppercase grey--text">{{title}}</v-toolbar-title>
+			<v-toolbar-title class="text-uppercase grey--text">
+				<div class="hidden-sm-and-down">{{title}}</div>
+				<div class="hidden-md-and-up">{{title_short}}</div>
+			</v-toolbar-title>
 			<v-spacer></v-spacer>
 			<!-- Notification dropdown-->
 			<v-menu  offset-y :close-on-content-click="false" v-if="user">
@@ -189,6 +192,7 @@ export default {
 	data(){
 		return{
 			title:'T! Markomanno-Albertia',
+			title_short: 'T! MA',
 			selected: [],
 			user: null,
 			drawer: null,

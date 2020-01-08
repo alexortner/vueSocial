@@ -410,7 +410,7 @@
               </v-list-item>
               <v-list-item>
                 <v-text-field
-                    v-model="leibbursch_value"
+                    v-model="member.leibbursch"
                     label="Leibbursch"
                     name="leibbursch"
                     prepend-icon="mdi-human-male-boy"
@@ -419,7 +419,7 @@
               </v-list-item>
               <v-list-item>
                 <v-text-field
-                    v-model="leibfuexe_value"
+                    v-model="member.leibfuexe"
                     label="Leibfüxe"
                     name="leibfuexe"
                     prepend-icon="mdi-baby"
@@ -477,23 +477,6 @@
         password_value: null,
         showPassword: false,
         authLevels_value: 'Benutzer',
-        // Personal data
-        name_value: "EditMember",
-        vorname_value: "Alex",
-        nachname_value: "Ortner",
-        namensziffer_value: null,
-        geburtstag_value: null,
-        // Education data
-        titel_value: null,
-        abschluss_value:null,
-        studium_value:null,
-        beruf_value:null,
-        // T!MA data
-        status_value : null,
-        semester_value :  null,
-        bund_value: null,
-        zweitbund_value: [],
-        ortsgruppen_value: [],
         
         menu: null,
         dialog: false,
@@ -506,6 +489,26 @@
       ],
       }
     },
+    computed: {
+      semester_list_items(){
+        var start_year=1950
+        var end_year=2020
+        var semester=[]
+
+        for(var i=end_year;i>start_year;i--){
+          var j=i+1
+    
+          var text="WS " + i + "/" + j
+          var value=i + "-ws"
+          semester.push({text,value})
+          text="SS " + i
+          value=i + "-ss"
+          semester.push({text,value}) 
+        }
+
+        return semester
+      }
+    },
     watch: {
       menu (val) {
         val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
@@ -515,6 +518,12 @@
       save (date) {
         this.$refs.menu.save(date)
       },
-    },
+      
+    }
+
+
   }
 </script>
+
+
+
