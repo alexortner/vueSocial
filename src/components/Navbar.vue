@@ -197,12 +197,13 @@ export default {
 			user: null,
 			drawer: null,
 			menu_items: [
-				{ title: 'Pinnwand', icon: 'mdi-home', route: '/wall' },
+				{ title: 'Pinnwand', icon: 'mdi-view-dashboard', route: '/wall' },
 				{ title: 'Mitteilungen', icon: 'mdi-bullhorn', route: '/news' },
 				{ title: 'Diskussionen', icon: 'mdi-forum' , route: '/forum' },
 				{ title: 'Veranstaltungen', icon: 'mdi-calendar-clock' , route: '/events' },
 				{ title: 'Mitgliederverzeichnis', icon: 'mdi-account-group' , route: '/members' },
-				{ title: 'Photos', icon: 'mdi-image-multiple' , route: '/photos' },				{ title: 'Hütte', icon: 'mdi-hotel' , route: '/booking' },
+				{ title: 'Photos', icon: 'mdi-image-multiple' , route: '/photos3' },				
+				{ title: 'Hütte', icon: 'mdi-home' , route: '/booking' },
 			],
 			user_menu_items: [
 				{ title: 'Meine Daten', subtitle: 'Eigene Daten bearbeiten', icon: 'mdi-account-edit', route: '/member_edit' },

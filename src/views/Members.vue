@@ -23,7 +23,7 @@
 						prepend-inner-icon="mdi-magnify"
 						clearable
 						hide-details
-						dense
+						
 						color="grey darken-2">
 					</v-text-field>
 					
@@ -84,7 +84,7 @@
 						<v-tooltip top open-delay="800">
 							<template v-slot:activator="{ on }">
 								<v-btn :value="1" v-on="on">
-									<v-icon>mdi-account-card-details</v-icon>
+									<v-icon>mdi-account-box-multiple</v-icon>
 								</v-btn>
 							</template>
 							<span>Kontaktkarten</span>
@@ -132,7 +132,7 @@
 		</v-card>
 
 		<!-- ------------------------------------------------------------------
-			call the chield compoents to show the data
+			call the child compoents to show the data
 		------------------------------------------------------------------- -->
 
 		<!-- view 1: cards -->

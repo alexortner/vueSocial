@@ -40,7 +40,6 @@
 						<v-spacer></v-spacer>
 						<v-list-item-action>
 							<EditMember :member="member"></EditMember>
-
 							<v-btn icon>
 								<v-icon>mdi-delete</v-icon>
 							</v-btn>

@@ -5,9 +5,7 @@ import vuetify from './plugins/vuetify';
 import firebase from '@/firebase/init'
 
 
-
 Vue.config.productionTip = false
-
 
 let app=null;
 // wait for firebase auth to init before creating the app
