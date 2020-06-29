@@ -13,8 +13,7 @@
 				>
 
 				<v-text-field
-
-					label="Suche nach Semester, Jahr oder Veranstaltung"
+					label="Bildersuche nach Semester, Jahr oder Veranstaltung"
 					v-model="search_value"
 					prepend-inner-icon="mdi-magnify"
 					clearable
@@ -30,7 +29,9 @@
 				align="right"
 			>
 				
-				<v-btn rounded large color="indigo" dark><v-icon left large>mdi-plus</v-icon> Bilder hochladen</v-btn>
+				<v-btn rounded large color="indigo" dark><v-icon left >mdi-image-plus</v-icon>  Fotos hinzufügen</v-btn>
+
+
 			</v-col>
 		</v-row>
 		
@@ -46,6 +47,7 @@
 				<v-hover v-slot="{ hover }">
 					<v-img
 						:src="imageItem.url"
+						lazy-src="../assets/lazy__load_image.png"
 						@click="clickThumbnail(i)"
 						class="image-thumbnail"
 						height="100%"
@@ -64,6 +66,15 @@
 							</v-col>
 						</v-row>
 					</v-expand-transition>
+					<template v-slot:placeholder>
+						<v-row
+							class="fill-height ma-0"
+							align="center"
+							justify="center"
+						>
+							<v-progress-circular indeterminate color="grey darken-1"></v-progress-circular>
+						</v-row>
+					</template>
 					</v-img>
 				</v-hover>
 			</v-responsive>

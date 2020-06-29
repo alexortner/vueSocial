@@ -1,8 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Navbar from '@/components/Navbar.vue'
+import NavbarBack from '@/components/NavbarBack.vue'
+
 import Login from '@/components/auth/login.vue'
 import Wall from '@/views/Wall.vue'
 import News from '@/views/News.vue'
+import Forum from '@/views/Forum.vue'
+import ForumViewPost from '@/views/forum/ForumViewPost.vue'
+
+
 
 import firebase from 'firebase'
 
@@ -13,22 +20,34 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    components: {
+      default: Login,
+      navigation: Navbar
+    }
   },
   {
     path: '/',
     name: 'Login',
-    component: Wall
+    components: {
+      default: Wall,
+      navigation: Navbar
+    }
   },
   {
     path: '/wall',
     name: 'Wall',
-    component: Wall
+    components: {
+      default: Wall,
+      navigation: Navbar
+    }
   },
   {
     path: '/news',
     name: 'News',
-    component: News
+    components: {
+      default: News,
+      navigation: Navbar
+    }
   },
   {
     path: '/members',
@@ -36,19 +55,36 @@ const routes = [
     meta: {
         requiresAuth: true
       },
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Members.vue')
-    
+    components: {
+      default: () => import(/* webpackChunkName: "members" */ '../views/Members.vue') , 
+      navigation: Navbar
+    }    
   },
   {
     path: '/forum',
     name: 'Forum',
+    meta: {
+        requiresAuth: true
+      },
+    components: {
+      default: () => import(/* webpackChunkName: "forum" */ '../views/Forum.vue') , 
+      navigation: Navbar
+    }
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Forum.vue')
+    //component: () => import(/* webpackChunkName: "about" */ '../views/Forum.vue')
+  },
+  { 
+    path: '/forum/:postid', 
+    name: 'ForumViewPost',
+    meta: {
+        requiresAuth: true
+      },
+    components: {
+      default: () => import(/* webpackChunkName: "forum" */ '../views/forum/ForumViewPost.vue'),
+      navigation: NavbarBack
+    }
   },
   {
     path: '/photos',
@@ -69,10 +105,13 @@ const routes = [
   {
     path: '/photos3',
     name: 'Photos3',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Photos3.vue')
+    meta: {
+        requiresAuth: true
+      },
+    components: {
+      default: () => import(/* webpackChunkName: "forum" */ '@/views/Photos3.vue'),
+      navigation: Navbar
+    }
   },
   {
     path: '/booking',
@@ -90,6 +129,14 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Events.vue')
   },
+  {
+    path: '/simpleeditor',
+    name: 'SimpleEditor',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../components/SimpleEditor.vue')
+   },
 ]
 
 const router = new VueRouter({

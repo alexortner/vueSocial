@@ -10,9 +10,10 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^16.0.0",
     "@ckeditor/ckeditor5-vue": "^1.0.1",
+    "@webdataorg/linxios-vue": "^1.2.0",
     "core-js": "^3.4.3",
-    "firebase": "^7.6.1",
-    "mapbox-gl": "^1.6.1",
+    "firebase": "^7.15.5",
+    "mapbox-gl": "^1.11.0",
     "quill": "^1.3.7",
     "tiptap-vuetify": "^2.10.0",
     "vue": "^2.6.10",
@@ -22,6 +23,7 @@
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.1.3",
     "vue-stack-grid": "^1.2.1",
+    "vue2-editor": "^2.10.2",
     "vuetify": "^2.1.0"
   },
   "devDependencies": {

@@ -2,80 +2,158 @@
 <template>
 	<div class="members">
 		<h1 class="subheading grey--text">Mitgliederverzeichnis</h1>
+
 		<!-- ------------------------------------------------------------------
-			Toolbar with search, filter and buttons to call the different views
+		Toolbar with search, filter and view change
 		------------------------------------------------------------------- -->
-		<v-card class="my-3 px-3 elevation-5" >
-			<v-row >
-				<!-- Search input form-->
-				<v-col 
-					cols="12"
-					order=3
-					align="center"
-
-					sm="3"
-					order-sm=1
-					>
-
-					<v-text-field
-						label="Namen suchen"
+		
+		<v-row >
+			<v-col
+			>
+				<v-toolbar  height="79">
+				<v-text-field
+						label="Suche"
 						v-model="search_value"
 						prepend-inner-icon="mdi-magnify"
+						append-outer-icon="mdi-filter-plus"
 						clearable
 						hide-details
+						outlined
+						color="grey darken-1"
+						@click:append-outer="show_filter=!show_filter"
+						>
+				</v-text-field>
+				<div class="mx-5"></div>
+				<v-tooltip top open-delay="400">
+					<template v-slot:activator="{ on }">
+						<v-btn :value="1" v-on="on" icon class="d-none d-sm-flex" @click="toggle_view='list'" retain-focus-on-click>
+							<v-icon>mdi-view-list</v-icon>
+						</v-btn>
+					</template>
+					<span>Listen Ansicht</span>
+				</v-tooltip>
+				<v-tooltip top open-delay="400">
+					<template v-slot:activator="{ on }">
+						<v-btn :value="2" v-on="on" icon class="d-none d-sm-flex" @click="toggle_view='photo'" retain-focus-on-click>
+							<v-icon>mdi-image</v-icon>
+						</v-btn>
+					</template>
+					<span>Bilder Ansicht</span>
+				</v-tooltip>
+				<v-tooltip top open-delay="400">
+					<template v-slot:activator="{ on }">
+						<v-btn :value="3" v-on="on" icon class="d-none d-sm-flex" @click="toggle_view='map'" retain-focus-on-click>
+							<v-icon>mdi-earth</v-icon>
+						</v-btn>
+					</template>
+					<span>Karten Ansicht</span>
+				</v-tooltip>
+				<div class="mx-5"></div>
+				<v-tooltip top open-delay="400">
+					<template v-slot:activator="{ on }">
+						<v-btn :value="4" v-on="on" icon class="d-none d-sm-flex">
+							<v-icon>mdi-cloud-download</v-icon>
+						</v-btn>
+					</template>
+					<span>Download Excel</span>
+				</v-tooltip>
+
+
+				<v-menu offset-y nudge-bottom=18>
+					<template v-slot:activator="{ on }">
 						
-						color="grey darken-2">
-					</v-text-field>
-					
-				</v-col>
-				<!-- select form for ortsgruppe filter-->
-				<v-col
-					cols="12"
-					order=2
-					align="center"
+						<v-btn icon class="d-sm-none" v-on="on">
+							<v-icon>mdi-dots-vertical</v-icon>
+						</v-btn>
+					</template>
+					<v-list>
+						<v-list-item @click="toggle_view='list'">
+							<v-list-item-icon>
+								<v-icon>mdi-view-list</v-icon>
+							</v-list-item-icon>
+							<v-list-item-content>
+								<v-list-item-title>Listen Ansicht</v-list-item-title>
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item @click="toggle_view='photo'">
+							<v-list-item-icon>
+								<v-icon>mdi-image</v-icon>
+							</v-list-item-icon>
+							<v-list-item-content>
+								<v-list-item-title>Bilder Ansicht</v-list-item-title>
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item @click="toggle_view='map'">
+							<v-list-item-icon>
+								<v-icon>mdi-earth</v-icon>
+							</v-list-item-icon>
+							<v-list-item-content>
+								<v-list-item-title>Karten Ansicht</v-list-item-title>
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-icon>
+								<v-icon>mdi-cloud-download</v-icon>
+							</v-list-item-icon>
+							<v-list-item-content>
+								<v-list-item-title>Download als Excel</v-list-item-title>
+							</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+				
+				
+				
+				
+				
+			</v-toolbar>
+			<v-card 
+				v-if="show_filter"
+				class="my-1 py-3"
+			>
+				<v-list>
+					<v-list-item>
+						<v-select
+									label="Filter wählen"
+									v-model="filter_values"
+									:items="filter_items"
+									:menu-props="{ offsetY: true }"
+									outlined
+									hide-selected
+									color="grey darken-2"
+									offset-y
+									@change="subfilter_values=[]"
+								></v-select>
+						</v-list-item>
+					<v-list-item v-if="filter_values">
+						<v-select 
+									:label="subfilter_label"
+									v-model="subfilter_values"
+									:items="subfilter_items"
+									:menu-props="{ offsetY: true }"
+									chips
+									deletable-chips
+									multiple
+									outlined
+									color="grey darken-2"
+								></v-select>
+						</v-list-item>
+				</v-list>
 
-					sm="2"
-					order-sm=2>
-					<v-select
-						label="Filter wählen"
-						v-model="filter_values"
-						:items="filter_items"
-						small-chips
-						deletable-chips
-						hide-details
-						color="grey darken-2"
-						dense
-					></v-select>
-				</v-col>
-				<v-col
-					cols="12"
-					order=2
-					align="center"
+				<v-card-actions class=px-4>
+					<v-btn  @click="clean_filter"><v-icon left>mdi-filter-remove</v-icon> Alle Filter Entfernen</v-btn>
+				</v-card-actions>
+			</v-card>
 
-					sm="4"
-					order-sm=3>
-					<v-select v-if="filter_values"
-						:label="subfilter_label"
-						v-model="subfilter_values"
-						:items="subfilter_items"
-						small-chips
-						dense
-						deletable-chips
-						single-line
-						hide-details
-						multiple
-						color="grey darken-2"
-					></v-select>
-				</v-col>
-
-				<v-col
-					cols="12"
-					order=1
-					align="end"
-					sm="3" 
-					order-sm=4
-				>
-					<v-card flat>
+			</v-col>
+			<!--
+			<v-col 
+				cols="12"
+				justify="center"
+				md="auto"
+				sm="auto"
+				lg="auto"
+			> <center>
 				<v-btn-toggle 
 						center
 						v-model="toggle_exclusive" 
@@ -126,37 +204,41 @@
 						</v-tooltip>
 
 					</v-btn-toggle>
-					</v-card>
-				</v-col>
-			</v-row>
-		</v-card>
+					</center>
+			</v-col> -->
+		</v-row>
+
+		
+	
+
 
 		<!-- ------------------------------------------------------------------
 			call the child compoents to show the data
 		------------------------------------------------------------------- -->
 
 		<!-- view 1: cards -->
-		<div class="py-3"  v-if="toggle_exclusive==1">
+		<div class="py-3"  v-if="toggle_view=='list'">
 			<ViewMembersCard :member_filtered="member_filtered"></ViewMembersCard>
 		</div>
 
 		<!-- view 2: table -->
-		<div class="py-4" v-if="toggle_exclusive==2">
+		<div class="py-4" v-if="toggle_view=='table'">
 			<ViewMembersTable :member_filtered="member_filtered"></ViewMembersTable>
 		</div>
 
 		<!-- view 3: photo cards -->
-		<div class="py-1" v-if="toggle_exclusive==3">
+		<div class="py-1" v-if="toggle_view=='photo'">
 			<ViewMembersPhoto :member_filtered="member_filtered"></ViewMembersPhoto>	
 		</div>
 
 		<!-- view 4: google map -->
-		<div class="py-1" v-if="toggle_exclusive==4">
+		<div class="py-1" v-if="toggle_view=='map'">
 			<ViewMembersMap></ViewMembersMap>
 		</div>
 
-		<v-btn @click="tester">load</v-btn>
-
+		<v-btn @click="tester">test </v-btn>
+		
+		
 	</div>	
 </template>
 
@@ -186,15 +268,15 @@ export default {
 	//{EditMember},
 	data(){
 		return{
+		show_filter:false,
 		imgError:false,
-		toggle_exclusive: 1,
+		toggle_view: "list",
 		// variable to hold search field value
 		search_value: '',
 		// dropdown
 		filter_items:['Status','Semester','Ortsgruppe','Geburtstag'],
-		filter_values:null,
+		filter_values: null,
 		subfilter_values: [],
-		
 		member_list:[],
 		lat:50,
 		lng:8
@@ -369,8 +451,15 @@ export default {
 				streetViewControl:false 
 			})
 		},
+		clean_filter(){
+			console.log('clean filter')
+			this.show_filter=false
+			this.filter_values=null
+			this.subfilter_values=[]
+		},
 
 		tester(){
+			console.log("Test Funktion")
 			console.log(this.subfilter_values)
 		
 		}
