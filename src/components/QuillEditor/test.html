@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet"> 
+    <script src="https://cdn.quilljs.com/1.3.4/quill.js"></script>
+  </head>
+  <body>
+  <!-- Create toolbar container -->
+<div id="toolbar">
+  <!-- Add font size dropdown -->
+  <select class="ql-size">
+    <option value="small">Small</option>
+    <!-- Note a missing, thus falsy value, is used to reset to default -->
+    <option selected>Normal</option>
+    <option value="large">Large</option>
+    <option value="huge">Huge</option>
+  </select>
+  <!-- Add a bold button -->
+  <button class="ql-bold">Bold</button>
+  <!-- Add subscript and superscript buttons -->
+  <button class="ql-script" value="sub">Sub</button>
+  <button class="ql-script" value="super">Super</button>
+</div>
+<div id="editor" >
+    <p>Hello World!</p>
+    <p>Some initial <strong>bold</strong> text</p>
+    <p><br></p>
+  </div>
+
+<!-- Initialize editor with toolbar -->
+<script>
+  var quill = new Quill('#editor', {
+    modules: {
+      toolbar: '#toolbar'
+    }
+  });
+</script>

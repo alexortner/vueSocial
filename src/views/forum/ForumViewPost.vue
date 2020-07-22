@@ -118,15 +118,106 @@
 			</v-col>
 			<v-col>
 				<v-card color="grey lighten-3">
-					<v-card-subtitle><b>Antworten:</b></v-card-subtitle>
+					<v-card-title>Antworten:
+					</v-card-title>
+					
+   
 					<v-card-text>
-						<vue-editor v-model="content" :editor-toolbar="customToolbar"/>
-<!--
-						<editor v-model="content">
-										</editor> -->
+						<!--
+						<v-btn-toggle
+							multiple
+							
+						>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on }">
+								<v-btn
+									v-on="on"
+									>
+									<v-icon>mdi-format-title</v-icon>
+								</v-btn>
+							</template>
+							<span>Titel</span>
+						</v-tooltip>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on }">
+								<v-btn
+									v-on="on"
+									>
+									<v-icon size=15>mdi-format-title</v-icon>
+								</v-btn>
+							</template>
+							<span>Subtitel</span>
+						</v-tooltip>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on }">
+								<v-btn
+									v-on="on"
+									>
+									<v-icon>mdi-format-bold</v-icon>
+								</v-btn>
+							</template>
+							<span>Fett</span>
+						</v-tooltip>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on }">
+								<v-btn
+									v-on="on"
+									>
+									<v-icon>mdi-format-italic</v-icon>
+								</v-btn>
+							</template>
+							<span>Kursiv</span>
+						</v-tooltip>
+						
+						
+
+						</v-btn-toggle>
+
+						<v-btn-toggle
+							class="mx-2"
+							multiple
+						>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on }">
+								<v-btn
+									v-on="on"
+									>
+									<v-icon>mdi-emoticon-happy-outline</v-icon>
+								</v-btn>
+							</template>
+							<span>Emoticon einfügen</span>
+						</v-tooltip>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on }">
+								<v-btn
+									v-on="on"
+									>
+									<v-icon>mdi-image</v-icon>
+								</v-btn>
+							</template>
+							<span>Bild einfügen</span>
+						</v-tooltip>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on }">
+								<v-btn
+									v-on="on"
+									>
+									<v-icon>mdi-link-variant</v-icon>
+								</v-btn>
+							</template>
+							<span>Link einfügen</span>
+						</v-tooltip>
+						
+						</v-btn-toggle>
+					-->
+					<!--
+					<vue-editor v-model="content" :editor-toolbar="customToolbar"/>-->
+
+					<peditor v-model="content"></peditor>
 					</v-card-text>
+					
 					<v-card-actions>
-						<v-icon class="mx-2">mdi-thumb-up</v-icon> 4
+						<v-btn rounded color="primary" dark class="mx-3 mb-2 "><v-icon>mdi-content-save</v-icon> speichern</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-col>
@@ -155,24 +246,21 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 //import { quillEditor } from 'vue-quill-editor'
-//import SimpleEditor from '@/components/SimpleEditor'
-import { VueEditor } from 'vue2-editor'
+import SuperSimpleEditor from '@/components/SuperSimpleEditor'
+//import { VueEditor } from 'vue2-editor'
 export default {
 	components: {
             //wysiwyg,
             //quillEditor
-            //editor : SimpleEditor
-            VueEditor
+            peditor : SuperSimpleEditor,
+            //VueEditor
             //ckeditor: CKEditor.component,
         },
 	data(){
 		return{
 			content:'deine Antwort ...',
 			customToolbar : [
-						[{ header: [1, 2, false] }],
-						//[{ 'size': ['small', false, 'large'] }],
-						['bold', 'italic'],
-						[{ 'list': 'ordered'}],
+						['bold'],
 						['link', 'image']
 					],
             editorOption: {

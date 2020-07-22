@@ -26,12 +26,12 @@ export default {
 
   mounted(){
     var icons = Quill.import('ui/icons');
-    //icons['bold'] = '<i aria-hidden="true" class="v-icon mdi mdi-format-bold theme--light"></i>';
-    //icons['italic'] = '<i aria-hidden="true" class="v-icon mdi mdi-format-italic theme--light"></i>';
-    //icons['image'] = '<i aria-hidden="true" class="v-icon mdi mdi-image theme--light"></i>';
-    //icons['list']['ordered'] = '<i aria-hidden="true" class="v-icon mdi mdi-format-list-numbered theme--light"></i>';
-    //icons['list']['bullet'] = '<i aria-hidden="true" class="v-icon mdi mdi-format-list-bulleted theme--light"></i>';
-    //icons['link'] = '<i aria-hidden="true" class="v-icon mdi mdi-link-box-variant theme--light"></i>';
+    icons['bold'] = '<i aria-hidden="true" class="v-icon mdi mdi-format-bold theme--light"></i>';
+    icons['italic'] = '<i aria-hidden="true" class="v-icon mdi mdi-format-italic theme--light"></i>';
+    icons['image'] = '<i aria-hidden="true" class="v-icon mdi mdi-image theme--light"></i>';
+    icons['list']['ordered'] = '<i aria-hidden="true" class="v-icon mdi mdi-format-list-numbered theme--light"></i>';
+    icons['list']['bullet'] = '<i aria-hidden="true" class="v-icon mdi mdi-format-list-bulleted theme--light"></i>';
+    icons['link'] = '<i aria-hidden="true" class="v-icon mdi mdi-link-box-variant theme--light"></i>';
 
 
     this.editor = new Quill(this.$refs.editor,{
@@ -43,7 +43,7 @@ export default {
             ['link', 'image']
           ],
       },
-      theme: 'bubble', //bubble
+      theme: 'snow', //bubble
       formats: ['bold','italic','header']
     });
     this.editor.root.innerHTML = this.value;
