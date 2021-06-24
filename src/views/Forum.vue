@@ -44,7 +44,7 @@
 					</v-btn-toggle>
 				</template>
 				<div class="mx-3"></div>
-				<v-btn rounded large color="indigo" dark >
+				<v-btn rounded large color="indigo" dark  @click="tester">
 					<v-icon left >mdi-message-plus</v-icon>  
 					<span v-if="$vuetify.breakpoint.mdAndUp">Neuen Beitrag erstellen</span>
 					<span v-else>Neu</span>
@@ -63,14 +63,23 @@
 					<v-card @click="forumViewPost(item.id)">
 						
 						<v-list-item>
-							<v-list-item-avatar color="red darken-4 white--text" size="62">AO</v-list-item-avatar>
+							<v-list-item-avatar v-if="!imgError" size="72">
+							<img 
+							:src="item.avatarURL"
+							:alt="item.created_by"
+							@error="onImgError()"/>
+						</v-list-item-avatar>
+						<!-- else show initials  -->
+						<v-list-item-avatar v-else color="red darken-4 white--text" size="62">
+							{{initials(created_by)}}
+						</v-list-item-avatar>
 							<v-list-item-content>
 								<v-list-item-title class="headline">{{item.subject}}</v-list-item-title>
 								<v-list-item-subtitle>von {{item.created_by}} am {{item.created_date}}</v-list-item-subtitle>
 							</v-list-item-content>
 						</v-list-item>
 						<v-card-text>
-							{{item.content.slice(0, 500)}}
+							{{item.content}}...
 						</v-card-text>
 
 						<v-card-actions>
@@ -155,6 +164,9 @@
 
 <script>
 // @ is an alias to /src
+import firebase from '@/firebase/init'
+let db=firebase.firestore()
+let storage=firebase.storage().ref()
 
 export default {
 	name: 'forum',
@@ -162,54 +174,7 @@ export default {
 	data(){
 		return{
 			showPost: false,
-			topics: [
-				{	
-					id:1,
-					subject: "Semesterantritsskneipe",
-					content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet",
-					created_by: "Alex Ortner",
-					created_date: "2020-06-18",
-					likes: 5,
-					replies: 7
-				},
-				{
-					id:2,
-					subject: "Haus-Hüttenwanderung 2020",
-					content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet",
-					created_by: "Mike Krüger",
-					created_date: "2020-06-15",
-					likes: 22,
-					replies: 1
-				},
-				{
-					id:3,
-					subject: "Stiftungsfest 2020",
-					content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet",
-					created_by: "Mike Hans",
-					created_date: "2020-04-15",
-					likes: 22,
-					replies: 1
-				},
-				{
-					id:4,
-					subject: "Haus-Hüttenwanderung 2019",
-					content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet",
-					created_by: "Mike Krüger",
-					created_date: "2019-06-01",
-					likes: 22,
-					replies: 1
-				},
-				{
-					id:5,
-					subject: "Haus-Hüttenwanderung 2018",
-					content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet",
-					created_by: "Mike Krüger",
-					created_date: "2018-06-15",
-					likes: 22,
-					replies: 1
-				}
-			],
-
+			topics: [],
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
@@ -217,6 +182,16 @@ export default {
 			page: 1,
 			itemsPerPage: 4,
 			sortBy: 'created_date',
+			test: {
+					id:2,
+					topic: "Haus-Hüttenwanderung 2020",
+					content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet",
+					created_by: "Mike Krüger",
+					created_date: "2020-06-15",
+					likes: 22,
+					replies: 1
+				},
+			imgError:false
 			
 			
 		}
@@ -241,9 +216,46 @@ export default {
 		this.$router.push('/forum/'+id)
       },
 	tester(){
-		console.log("test")
+		console.log(this.topics)
+		this.topics.push(this.test)
+	},
+	getHumanTimestamp(post_time){
+		let seconds = Math.floor((new Date() - post_time)/1000); 
+		let interval = Math.floor(seconds/31536000); 
+		//let diff=Math.floor((now_time - post_time)/1000)
+		//console.log(new Date(),seconds,interval)
 	}
     },
+	// get all forum data
+	created(){
+
+		function test() {
+			let forumCollectionRef = db.collection('forum_topics')
+			let memberCollectionRef = db.collection('members')
+
+			forumCollectionRef.get()
+				.then(snapshot => {
+					console.log("Snap 1")
+					let s1i=1
+					snapshot.forEach(topic => {
+						
+						let thread = {}
+						thread.id=topic.id
+						console.log("Snap 2-",s1i,thread.id)
+						s1i+=1
+						
+					})
+				})
+				.then(test => {
+					console.log("ende",test)
+				})
+			}
+
+		test()
+
+	},
+	
+	
 
  
 }

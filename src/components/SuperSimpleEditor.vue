@@ -14,19 +14,7 @@
               </template>
               <span>Titel</span>
             </v-tooltip>
-           <!-- <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  v-on="on"
-                   class ="ql-header"
-                  value="3"
-                  >
-                  <v-icon size=15>mdi-format-title</v-icon>
-                </v-btn>
-              </template>
-              <span>Subtitel</span>
-            </v-tooltip>
--->
+            
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn class="ql-bold"
